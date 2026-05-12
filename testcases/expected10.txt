@@ -1,0 +1,2 @@
+JALUR TERPENDEK: 6
+RUTE: 1 -> 3 -> 6 -> 7
