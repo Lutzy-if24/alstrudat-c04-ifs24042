@@ -9,7 +9,6 @@ public class App {
         // Baris 1: N (persimpangan) dan M (jalan)
         int N = Integer.parseInt(scanner.nextLine().trim());
         int M = Integer.parseInt(scanner.nextLine().trim());
-
         // Baris 2: titik awal dan tujuan
         int start = Integer.parseInt(scanner.nextLine().trim());
         int end = Integer.parseInt(scanner.nextLine().trim());
