@@ -1,2 +1,2 @@
-JALUR TERPENDEK: 9
-RUTE: 1 -> 2 -> 3 -> 4 -> 5
+JALUR TERPENDEK: 12
+RUTE: 1 -> 4 -> 5
