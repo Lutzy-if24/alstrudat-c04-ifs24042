@@ -29,7 +29,6 @@ public class App {
             edges[i][1] = Integer.parseInt(parts[1]);
             edges[i][2] = Integer.parseInt(parts[2]);
         }
-
         scanner.close();
 
         Program.solve(N, M, start, end, blocked, edges);
