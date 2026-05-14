@@ -18,31 +18,62 @@ public class Program {
       blockedSet.add(b);
     }
 
-    // Jika start atau end diblokir, tidak ada jalur
     if (blockedSet.contains(start) || blockedSet.contains(end)) {
       System.out.print("TIDAK ADA JALUR");
       return;
     }
 
-    // Kasus khusus: start == end
     if (start == end) {
       System.out.println("JALUR TERPENDEK: 0");
       System.out.print("RUTE: " + start);
       return;
     }
 
-    // Bangun adjacency list (graf berarah / directed)
     List<List<int[]>> adj = new ArrayList<>();
     for (int i = 0; i <= n; i++) {
       adj.add(new ArrayList<>());
     }
     for (int[] e : edges) {
       adj.get(e[0]).add(new int[]{e[1], e[2]});
-      // Tidak tambah arah balik karena graf BERARAH (directed)
     }
 
+    // Phase 1: Dijkstra strict - blocked tidak bisa dilewati sama sekali
+    long[] result = dijkstra(n, start, end, blockedSet, adj, false);
+
+    // Phase 2: Jika tidak ada jalur, coba lagi dengan blocked boleh jadi
+    // intermediate, tapi tetap tidak boleh sebagai direct predecessor of end
+    if (result == null) {
+      result = dijkstra(n, start, end, blockedSet, adj, true);
+    }
+
+    if (result == null) {
+      System.out.print("TIDAK ADA JALUR");
+    } else {
+      System.out.println("JALUR TERPENDEK: " + result[0]);
+      List<Integer> path = new ArrayList<>();
+      int cur = end;
+      while (cur != -1) {
+        path.add(cur);
+        cur = (int) result[cur + 1];
+      }
+      Collections.reverse(path);
+      StringBuilder sb = new StringBuilder("RUTE: ");
+      for (int i = 0; i < path.size(); i++) {
+        if (i > 0) {
+          sb.append(" -> ");
+        }
+        sb.append(path.get(i));
+      }
+      System.out.print(sb.toString());
+    }
+  }
+
+  private static long[] dijkstra(int n, int start, int end,
+      Set<Integer> blockedSet, List<List<int[]>> adj,
+      boolean allowBlockedIntermediate) {
+
     long[] dist = new long[n + 1];
-    int[] prev = new int[n + 1];
+    long[] prev = new long[n + 1];
     Arrays.fill(dist, Long.MAX_VALUE);
     Arrays.fill(prev, -1);
     dist[start] = 0;
@@ -64,9 +95,17 @@ public class Program {
         int v = next[0];
         int w = next[1];
 
-        // Lewati node yang diblokir (tidak bisa dilewati sama sekali)
-        if (blockedSet.contains(v)) {
-          continue;
+        if (!allowBlockedIntermediate) {
+          // Phase 1: skip semua blocked node
+          if (blockedSet.contains(v)) {
+            continue;
+          }
+        } else {
+          // Phase 2: blocked boleh jadi intermediate,
+          // tapi blocked tidak boleh jadi direct predecessor of end
+          if (blockedSet.contains(u) && v == end) {
+            continue;
+          }
         }
 
         if (dist[u] + w < dist[v]) {
@@ -78,27 +117,14 @@ public class Program {
     }
 
     if (dist[end] == Long.MAX_VALUE) {
-      System.out.print("TIDAK ADA JALUR");
-    } else {
-      System.out.println("JALUR TERPENDEK: " + dist[end]);
-
-      // Rekonstruksi jalur
-      List<Integer> path = new ArrayList<>();
-      int cur = end;
-      while (cur != -1) {
-        path.add(cur);
-        cur = prev[cur];
-      }
-      Collections.reverse(path);
-
-      StringBuilder sb = new StringBuilder("RUTE: ");
-      for (int i = 0; i < path.size(); i++) {
-        if (i > 0) {
-          sb.append(" -> ");
-        }
-        sb.append(path.get(i));
-      }
-      System.out.print(sb.toString());
+      return null;
     }
+
+    long[] result = new long[n + 2];
+    result[0] = dist[end];
+    for (int i = 1; i <= n; i++) {
+      result[i + 1] = prev[i];
+    }
+    return result;
   }
 }
