@@ -19,13 +19,13 @@ public class Program {
     }
 
     if (blockedSet.contains(start) || blockedSet.contains(end)) {
-      System.out.println("TIDAK ADA JALUR");
+      System.out.print("TIDAK ADA JALUR");
       return;
     }
 
     if (start == end) {
       System.out.println("JALUR TERPENDEK: 0");
-      System.out.println("RUTE: " + start);
+      System.out.print("RUTE: " + start);
       return;
     }
 
@@ -44,7 +44,7 @@ public class Program {
     }
 
     if (result == null) {
-      System.out.println("TIDAK ADA JALUR");
+      System.out.print("TIDAK ADA JALUR");
     } else {
       long dist = result[0];
       System.out.println("JALUR TERPENDEK: " + dist);
@@ -62,7 +62,7 @@ public class Program {
         }
         sb.append(path.get(i));
       }
-      System.out.println(sb.toString());
+      System.out.print(sb.toString());
     }
   }
 
